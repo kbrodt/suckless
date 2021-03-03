@@ -1,0 +1,10 @@
+# Executables
+
+dwm/dwm
+dmenu/dmenu
+dmenu/stest
+slstatus/slstatus
+st/st
+
+# Configs
+config.h

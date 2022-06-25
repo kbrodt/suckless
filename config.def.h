@@ -1,17 +1,17 @@
 /* See LICENSE file for copyright and license details. */
 
 /* appearance */
-static const unsigned int borderpx  = 1;        /* border pixel of windows */
+static const unsigned int borderpx  = 2;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
-static const char *fonts[]          = { "monospace:size=10" };
-static const char dmenufont[]       = "monospace:size=10";
+static const char *fonts[]          = { "DejaVu Sans Mono:size=10", "fontawesome:size=10" };
+static const char dmenufont[]       = "DejaVu Sans Mono:size=10";
 static const char col_gray1[]       = "#222222";
 static const char col_gray2[]       = "#444444";
 static const char col_gray3[]       = "#bbbbbb";
 static const char col_gray4[]       = "#eeeeee";
-static const char col_cyan[]        = "#005577";
+static const char col_cyan[]        = "#ff8000";  // "#005577";
 static const char *colors[][3]      = {
 	/*               fg         bg         border   */
 	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
@@ -19,7 +19,8 @@ static const char *colors[][3]      = {
 };
 
 /* tagging */
-static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+// static const char *tags[] = { "", "", "", "", "", "", "", "", " ", "" };
+static const char *tags[] = { "", "", "", ""};
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -28,7 +29,11 @@ static const Rule rules[] = {
 	 */
 	/* class      instance    title       tags mask     isfloating   monitor */
 	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
-	{ "Firefox",  NULL,       NULL,       1 << 8,       0,           -1 },
+	{ "discord",  NULL,       NULL,       1 << 1,       0,           -1 },
+	{ "firefox",  NULL,       NULL,       1 << 2,       0,           -1 },
+	{ "qutebrowser", NULL,    NULL,       1 << 2,       0,           -1 },
+	{ "zoom",     NULL,       NULL,       1 << 3,       0,           -1 },
+	{ "TelegramDesktop", NULL, NULL,      0,            1,           -1 },
 };
 
 /* layout(s) */
@@ -45,7 +50,7 @@ static const Layout layouts[] = {
 };
 
 /* key definitions */
-#define MODKEY Mod1Mask
+#define MODKEY Mod4Mask
 #define TAGKEYS(KEY,TAG) \
 	{ MODKEY,                       KEY,      view,           {.ui = 1 << TAG} }, \
 	{ MODKEY|ControlMask,           KEY,      toggleview,     {.ui = 1 << TAG} }, \
@@ -79,21 +84,38 @@ static Key keys[] = {
 	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
 	{ MODKEY,                       XK_space,  setlayout,      {0} },
 	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
-	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
-	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
+	{ MODKEY,                       XK_Down,   moveresize,     {.v = "0x 25y 0w 0h" } },
+	{ MODKEY,                       XK_Up,     moveresize,     {.v = "0x -25y 0w 0h" } },
+	{ MODKEY,                       XK_Right,  moveresize,     {.v = "25x 0y 0w 0h" } },
+	{ MODKEY,                       XK_Left,   moveresize,     {.v = "-25x 0y 0w 0h" } },
+	{ MODKEY|ShiftMask,             XK_Down,   moveresize,     {.v = "0x 0y 0w 25h" } },
+	{ MODKEY|ShiftMask,             XK_Up,     moveresize,     {.v = "0x 0y 0w -25h" } },
+	{ MODKEY|ShiftMask,             XK_Right,  moveresize,     {.v = "0x 0y 25w 0h" } },
+	{ MODKEY|ShiftMask,             XK_Left,   moveresize,     {.v = "0x 0y -25w 0h" } },
+	{ MODKEY|ControlMask,           XK_Up,     moveresizeedge, {.v = "t"} },
+	{ MODKEY|ControlMask,           XK_Down,   moveresizeedge, {.v = "b"} },
+	{ MODKEY|ControlMask,           XK_Left,   moveresizeedge, {.v = "l"} },
+	{ MODKEY|ControlMask,           XK_Right,  moveresizeedge, {.v = "r"} },
+	{ MODKEY|ControlMask|ShiftMask, XK_Up,     moveresizeedge, {.v = "T"} },
+	{ MODKEY|ControlMask|ShiftMask, XK_Down,   moveresizeedge, {.v = "B"} },
+	{ MODKEY|ControlMask|ShiftMask, XK_Left,   moveresizeedge, {.v = "L"} },
+	{ MODKEY|ControlMask|ShiftMask, XK_Right,  moveresizeedge, {.v = "R"} },
+	{ MODKEY,                       XK_6,      view,           {.ui = ~0 } },
+	{ MODKEY|ShiftMask,             XK_6,      tag,            {.ui = ~0 } },
+	{ MODKEY,                       XK_minus,  view,           {.ui = ~0 } },
+	{ MODKEY|ShiftMask,             XK_minus,  tag,            {.ui = ~0 } },
 	{ MODKEY,                       XK_comma,  focusmon,       {.i = -1 } },
 	{ MODKEY,                       XK_period, focusmon,       {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
-	TAGKEYS(                        XK_1,                      0)
-	TAGKEYS(                        XK_2,                      1)
-	TAGKEYS(                        XK_3,                      2)
-	TAGKEYS(                        XK_4,                      3)
-	TAGKEYS(                        XK_5,                      4)
-	TAGKEYS(                        XK_6,                      5)
-	TAGKEYS(                        XK_7,                      6)
-	TAGKEYS(                        XK_8,                      7)
-	TAGKEYS(                        XK_9,                      8)
+	TAGKEYS(                        XK_2,                      0)
+	TAGKEYS(                        XK_3,                      1)
+	TAGKEYS(                        XK_4,                      2)
+	TAGKEYS(                        XK_5,                      3)
+	TAGKEYS(                        XK_7,                      0)
+	TAGKEYS(                        XK_8,                      1)
+	TAGKEYS(                        XK_9,                      2)
+	TAGKEYS(                        XK_0,                      3)
 	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
 };
 
